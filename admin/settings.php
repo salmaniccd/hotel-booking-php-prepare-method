@@ -24,7 +24,7 @@ adminLogin();
                 <h3 class="mb-4"> SETTINGS</h3>
 
                 <!-- General Settings Section-->
-                <div class="card">
+                <div class="card border-0 shadow-sm mb-4">
                     <div class="card-body">
                         <div class="d-flex align-items-center justify-content-between mb-3">
                             <h5 class="card-title m-0">General Settings</h5>
@@ -70,6 +70,24 @@ adminLogin();
                 </div>
 
 
+                <!-- Shutdown Section  -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h5 class="card-title m-0">Shutdown Website </h5>
+
+                            <div class="form-check form-switch">
+                                <form action="">
+                                    <input onchange="upd_shutdown(this.value)" class="form-check-input" type="checkbox" id="shutdown_toggle">
+                                </form>
+                            </div>
+
+                        </div>
+
+                        <p class="card-text">No Customer will be allow book hotel room when shutdown mode is turnd on.</p>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -88,6 +106,9 @@ adminLogin();
 
             let site_title_inp = document.getElementById('site_title_inp');
             let site_about_inp = document.getElementById('site_about_inp');
+            let shutdown_toggle = document.getElementById('shutdown_toggle');
+
+
 
             let xhr = new XMLHttpRequest();
             xhr.open("POST", "ajax/settings_crud.php", true);
@@ -99,6 +120,14 @@ adminLogin();
 
                 site_title_inp.value = general_data.site_title;
                 site_about_inp.value = general_data.site_about;
+
+                if (general_data.shutdown == 0) {
+                    shutdown_toggle.checked = false;
+                    shutdown_toggle.value = 0;
+                } else {
+                    shutdown_toggle.checked = true;
+                    shutdown_toggle.value = 1;
+                }
             }
             xhr.send('get_general');
         }
@@ -108,19 +137,35 @@ adminLogin();
             xhr.open("POST", "ajax/settings_crud.php", true);
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             xhr.onload = function() {
-            var myModal = document.getElementById('general-s');
-            var modal = bootstrap.Modal.getInstance(myModal);
-            modal.hide();
+                var myModal = document.getElementById('general-s');
+                var modal = bootstrap.Modal.getInstance(myModal);
+                modal.hide();
 
-            if(this.responseText == 1) {
-                console.log('Data Updated Successfully!');
-                get_general();
-            } else {
-                console.log('Not Updated!');
+                if (this.responseText == 1) {
+                    alert('success', 'Changes Saved!');
+                    get_general();
+                } else {
+                    alert('Error', 'No Changes made!');
+                }
+
             }
-            console.log(this.responseText);
+            xhr.send('upd_general=1&site_title=' + encodeURIComponent(site_title_val) + '&site_about=' + encodeURIComponent(site_about_val));
+        }
+
+        function upd_shutdown(val) {
+            let xhr = new XMLHttpRequest();
+            xhr.open("POST", "ajax/settings_crud.php", true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onload = function() {
+                if (this.responseText == 1 && general_data.shutdown == 0) {
+                    alert('success', 'Site has been shutdown');
+                  
+                } else {
+                    alert('success', 'Shutdown Mode off');
+                }
+            get_general();
             }
-            xhr.send('upd_general=1&site_title='+encodeURIComponent(site_title_val)+'&site_about='+encodeURIComponent(site_about_val));
+            xhr.send('upd_shutdown='+val);
         }
 
         window.onload = function() {
@@ -130,4 +175,3 @@ adminLogin();
 </body>
 
 </html>
-

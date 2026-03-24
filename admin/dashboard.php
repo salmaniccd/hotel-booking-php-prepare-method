@@ -25,14 +25,6 @@ adminLogin();
             </div>
         </div>
     </div>
-
-
-
-
-
-
-
-
     <?php include_once 'inc/scripts.php'; ?>
 </body>
 
