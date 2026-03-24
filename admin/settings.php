@@ -62,7 +62,7 @@ adminLogin();
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" onclick="site_title_inp.value = general_data.site_title , site_about_inp.value = general_data.site_about" class="btn text-secondary shadow-none" data-bs-dismiss="modal">Cancel</button>
-                                    <button type="button" onclick="udp_general(site_title.value , site_update.value)" class="btn custom-bg text-white shadow-none">Submit</button>
+                                    <button type="button" onclick="udp_general(site_title.value , site_about.value)" class="btn custom-bg text-white shadow-none">Submit</button>
                                 </div>
                             </div>
                         </form>
@@ -108,19 +108,20 @@ adminLogin();
             xhr.open("POST", "ajax/settings_crud.php", true);
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             xhr.onload = function() {
-                // general_data = JSON.parse(this.responseText);
-                // site_title.innerText = general_data.site_title;
-                // site_about.innerText = general_data.site_about;
+            var myModal = document.getElementById('general-s');
+            var modal = bootstrap.Modal.getInstance(myModal);
+            modal.hide();
 
-                // site_title_inp.value = general_data.site_title;
-                // site_about_inp.value = general_data.site_about;
-
-                xhr.send('site_title' + site_title_val + '&site_about=' + site_about_val); 
+            if(this.responseText == 1) {
+                console.log('Data Updated Successfully!');
+                get_general();
+            } else {
+                console.log('Not Updated!');
             }
-            xhr.send('get_general');
+            console.log(this.responseText);
+            }
+            xhr.send('upd_general=1&site_title='+encodeURIComponent(site_title_val)+'&site_about='+encodeURIComponent(site_about_val));
         }
-
-
 
         window.onload = function() {
             get_general();
@@ -129,3 +130,4 @@ adminLogin();
 </body>
 
 </html>
+
